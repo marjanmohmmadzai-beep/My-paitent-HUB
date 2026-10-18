@@ -1,741 +1,392 @@
-import { useState } from 'react'
-import './App.css'
-const doctors = [
-  {
-    id: 1,
-    name: 'Dr. Shafiq Omid',
-    gender: 'Male',
-    specialty: 'Cardiology',
-    rating: 4.9,
-    hospital: 'Kabul Heart Center',
-    location: 'Kabul, Afghanistan',
-    available: '9:00 AM - 2:00 PM',
-    phone: '+93 700 000 001',
-    languages: 'English, Dari, Pashto',
-    image: 'https://i.pravatar.cc/300?img=12',
-  },
-  {
-    id: 2,
-    name: 'Dr. Marjan Mohammadzai',
-    gender: 'Female',
-    specialty: 'Dermatology',
-    rating: 4.8,
-    hospital: 'City Medical Center',
-    location: 'Kabul, Afghanistan',
-    available: '10:00 AM - 4:00 PM',
-    phone: '+93 700 000 002',
-    languages: 'English, Dari, Pashto',
-    image: 'https://i.pravatar.cc/300?img=47',
-  },
-  {
-    id: 3,
-    name: 'Dr. Omar Mohammadzai',
-    gender: 'Male',
-    specialty: 'Neurology',
-    rating: 4.7,
-    hospital: 'Kabul Medical Hospital',
-    location: 'Kabul, Afghanistan',
-    available: '8:00 AM - 1:00 PM',
-    phone: '+93 700 000 003',
-    languages: 'English, Dari',
-    image: 'https://i.pravatar.cc/300?img=11',
-  },
-  {
-    id: 4,
-    name: 'Dr. Marwa Mohammadzai',
-    gender: 'Female',
-    specialty: 'Pediatrics',
-    rating: 4.9,
-    hospital: 'Children Care Center',
-    location: 'Kabul, Afghanistan',
-    available: '9:00 AM - 3:00 PM',
-    phone: '+93 700 000 004',
-    languages: 'English, Dari, Pashto',
-    image: 'https://i.pravatar.cc/300?img=44',
-  },
-]
-const products = [
-  {
-    id: 1,
-    name: 'Blood Pressure Monitor',
-    category: 'Medical Devices',
-    price: 25,
-    oldPrice: 35,
-    rating: 4.8,
-    image: '🩺',
-    description: 'Digital blood pressure monitor for home use.',
-  },
-  {
-    id: 2,
-    name: 'Medical Face Masks',
-    category: 'Personal Care',
-    price: 8.5,
-    oldPrice: 12,
-    rating: 4.7,
-    image: '😷',
-    description: 'Disposable protective face masks.',
-  },
-  {
-    id: 3,
-    name: 'Nitrile Gloves',
-    category: 'Personal Care',
-    price: 12,
-    oldPrice: 18,
-    rating: 4.8,
-    image: '🧤',
-    description: 'Powder-free disposable gloves.',
-  },
-  {
-    id: 4,
-    name: 'Digital Thermometer',
-    category: 'Medical Devices',
-    price: 6.5,
-    oldPrice: 10,
-    rating: 4.5,
-    image: '🌡️',
-    description: 'Digital thermometer for quick temperature checks.',
-  },
-  {
-    id: 5,
-    name: 'First Aid Kit',
-    category: 'First Aid',
-    price: 18,
-    oldPrice: 25,
-    rating: 4.7,
-    image: '🧰',
-    description: 'Portable first aid kit for home and travel.',
-  },
-]
-const categories = [
-  'All',
-  'Medical Devices',
-  'Personal Care',
-  'First Aid',
-]
-function App() {
-  const [page, setPage] = useState('doctor')
-  const [search, setSearch] = useState('')
-  const [specialty, setSpecialty] = useState('All')
-  const [gender, setGender] = useState('All')
-  const [sortBy, setSortBy] = useState('name')
-  const [view, setView] = useState('list')
-  const [selectedDoctor, setSelectedDoctor] = useState(null)
-  const [message, setMessage] = useState('')
-  const [darkMode, setDarkMode] = useState(false)
-  const [productSearch, setProductSearch] = useState('')
-  const [productCategory, setProductCategory] = useState('All')
-  const [savedName, setSavedName] = useState('My Patient')
-  const [savedEmail, setSavedEmail] = useState('patient@example.com')
-  const [notifications, setNotifications] = useState({
-    appointments: true,
-    healthTips: true,
-    offers: false,
-  })
-  const specialties = [
-    'All',
-    ...new Set(doctors.map((doctor) => doctor.specialty)),
-  ]
-  const filteredDoctors = doctors
-    .filter((doctor) => {
-      const query = search.toLowerCase().trim()
-      const matchesSearch =
-        doctor.name.toLowerCase().includes(query) ||
-        doctor.specialty.toLowerCase().includes(query) ||
-        doctor.hospital.toLowerCase().includes(query)
-      const matchesSpecialty =
-        specialty === 'All' || doctor.specialty === specialty
-      const matchesGender =
-        gender === 'All' || doctor.gender === gender
-      return matchesSearch && matchesSpecialty && matchesGender
-    })
-    .sort((a, b) => {
-      if (sortBy === 'rating') {
-        return b.rating - a.rating
-      }
-      return a.name.localeCompare(b.name)
-    })
-  const filteredProducts = products.filter((product) => {
-    const query = productSearch.toLowerCase().trim()
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(query)
-    const matchesCategory =
-      productCategory === 'All' ||
-      product.category === productCategory
-    return matchesSearch && matchesCategory
-  })
-  function showPage(nextPage) {
-    setPage(nextPage)
-    setMessage('')
-  }
-  function resetFilters() {
-    setSearch('')
-    setSpecialty('All')
-    setGender('All')
-    setSortBy('name')
-  }
-  function handleBooking(doctor) {
-    setMessage(
-      `Appointment request prepared for ${doctor.name}. Please contact ${doctor.phone} to confirm.`,
-    )
-    setSelectedDoctor(null)
-  }
-  function toggleNotification(key) {
-    setNotifications((previous) => ({
-      ...previous,
-      [key]: !previous[key],
-    }))
-  }
+import React, { useState } from 'react';
+import './App.css';
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('settings');
+
   return (
-    <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
+    <div className="app-container">
+      {/* ---------------- سایدبار سمت چپ (Sidebar) ---------------- */}
       <aside className="sidebar">
         <div className="brand">
-          <div className="brand-logo">+</div>
-          <h2>
-            MyPatient<span>HUB</span>
-          </h2>
+          <div className="brand-logo">M</div>
+          <div>
+            <h3 className="brand-title">MyPatientHUB</h3>
+            <p className="brand-sub">Healthcare Platform</p>
+          </div>
         </div>
-        <nav className="sidebar-nav">
-          <button
-            type="button"
-            className={
-              page === 'doctor' ? 'nav-link active' : 'nav-link'
-            }
-            onClick={() => showPage('doctor')}
+
+        <ul className="nav-menu">
+          <li className="nav-item">
+            <span className="nav-icon">🔲</span> Dashboard
+          </li>
+          <li className="nav-item">
+            <span className="nav-icon">📅</span> Appointments
+          </li>
+          <li 
+            className={`nav-item ${activeTab === 'doctor' ? 'active' : ''}`}
+            onClick={() => setActiveTab('doctor')}
           >
-            <span className="icon">🩺</span>
-            <span>Find Doctor</span>
-          </button>
-          <button
-            type="button"
-            className={
-              page === 'marketplace'
-                ? 'nav-link active'
-                : 'nav-link'
-            }
-            onClick={() => showPage('marketplace')}
+            <span className="nav-icon">🩺</span> Find Doctor
+          </li>
+          <li className="nav-item">
+            <span className="nav-icon">🏥</span> Find Clinic
+          </li>
+          <li className="nav-item">
+            <span className="nav-icon">💬</span> Chat
+          </li>
+          <li 
+            className={`nav-item ${activeTab === 'marketplace' ? 'active' : ''}`}
+            onClick={() => setActiveTab('marketplace')}
           >
-            <span className="icon">🛍️</span>
-            <span>Marketplace</span>
-          </button>
-          <button
-            type="button"
-            className={
-              page === 'settings' ? 'nav-link active' : 'nav-link'
-            }
-            onClick={() => showPage('settings')}
+            <span className="nav-icon">🛍️</span> Find MarketPlace
+          </li>
+          <li className="nav-item">
+            <span className="nav-icon">💊</span> Find Pharmacy
+          </li>
+          <li className="nav-item">
+            <span className="nav-icon">👥</span> My Dependents
+          </li>
+          <li className="nav-item">
+            <span className="nav-icon">⚙️</span> My Account
+          </li>
+          <li 
+            className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('settings')}
           >
-            <span className="icon">⚙️</span>
-            <span>Settings</span>
-          </button>
-        </nav>
-        <div className="download-card">
-          <h4>Healthcare on the go</h4>
-          <p>Manage your healthcare needs in one place.</p>
+            <span className="nav-icon">🔧</span> Settings
+          </li>
+        </ul>
+
+        {/* بنر دانلود اپلیکیشن */}
+        <div className="download-banner">
+          <h4>Download</h4>
+          <p>MyPIHUB Mobile App</p>
           <div className="store-buttons">
-            <button
-              type="button"
-              onClick={() =>
-                setMessage('App Store link is not configured.')
-              }
-            >
-              App Store
-            </button>
-            <button
-              type="button"
-              onClick={() =>
-                setMessage('Google Play link is not configured.')
-              }
-            >
-              Google Play
-            </button>
+            <button className="store-btn"> App Store</button>
+            <button className="store-btn">🤖 Play Store</button>
           </div>
         </div>
       </aside>
-      <main className="main">
-        <header className="topbar">
+
+      {/* ---------------- محتوای اصلی (Main Content) ---------------- */}
+      <div className="main-content">
+        
+        {/* هدر بالای صفحه */}
+        <header className="top-header">
           <div className="breadcrumb">
-            Home / <strong>
-              {page === 'doctor'
-                ? 'Find Doctor'
-                : page === 'marketplace'
-                  ? 'Marketplace'
-                  : 'Settings'}
-            </strong>
+            🏠 / {activeTab === 'doctor' ? 'Find a Doctor' : activeTab === 'marketplace' ? 'Marketplace' : 'Accountsetting'}
+            <h2 className="header-page-title">
+              {activeTab === 'doctor' ? 'Find a Doctor' : activeTab === 'marketplace' ? 'Marketplace' : 'Accountsetting'}
+            </h2>
           </div>
-          <div className="topbar-right">
-            <input
-              className="top-search"
-              placeholder="Search doctors..."
-              aria-label="Search doctors"
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value)
-                setPage('doctor')
-              }}
-            />
-            <button
-              type="button"
-              className="top-icon"
-              onClick={() => setDarkMode((value) => !value)}
-              aria-label="Toggle dark mode"
-              title="Toggle dark mode"
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-            <button
-              type="button"
-              className="clear-search"
-              onClick={() => {
-                setSearch('')
-                setMessage('Doctor search cleared.')
-              }}
-            >
-              Clear Search
-            </button>
+          <div className="search-box">
+            <span className="search-icon">🔍</span>
+            <input type="text" placeholder="Type here..." />
+          </div>
+          <div className="header-actions">
+            <button className="logout-btn">➡️ Log out</button>
+            <span className="header-icon">⚙️</span>
+            <span className="header-icon">🔔</span>
           </div>
         </header>
-        {message && (
-          <div className="status-message" role="status">
-            <span>{message}</span>
-            <button
-              type="button"
-              onClick={() => setMessage('')}
-              aria-label="Dismiss message"
-            >
-              ×
-            </button>
-          </div>
-        )}
-        {page === 'doctor' && (
-          <>
-            <section className="doctor-hero">
-              <div className="hero-eyebrow">
-                YOUR HEALTH, OUR PRIORITY
+
+        {/* ---------------- ۱. بخش FIND DOCTOR ---------------- */}
+        {activeTab === 'doctor' && (
+          <main className="content-body">
+            <div className="doctor-hero-banner">
+              <h2>Find a Doctor</h2>
+              <p>Search Doctors and schedule an appointment</p>
+              <div className="hero-search-bar">
+                <span className="search-icon">🔍</span>
+                <input type="text" placeholder="Search a doctor by name, specialty" />
+                <button className="search-btn">SEARCH</button>
               </div>
-              <h1>Find the Right Doctor for You</h1>
-              <p>
-                Discover trusted healthcare professionals and find the
-                care you deserve.
-              </p>
-              <form
-                className="hero-search"
-                onSubmit={(event) => event.preventDefault()}
-              >
-                <input
-                  className="hero-input"
-                  placeholder="Search by doctor, specialty, or hospital..."
-                  aria-label="Search by doctor, specialty, or hospital"
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
+            </div>
+
+            <div className="view-toggle">
+              <button className="toggle-btn">🗺️ Map</button>
+              <button className="toggle-btn active-purple">☰ List</button>
+            </div>
+
+            <div className="doctor-layout">
+              <div className="filter-card">
+                <h4>Filter By</h4>
+                <div className="filter-group">
+                  <label>Specialty</label>
+                  <select><option>All</option></select>
+                </div>
+                <div className="filter-group">
+                  <label>Gender</label>
+                  <select><option>All</option></select>
+                </div>
+                <div className="filter-group">
+                  <label>Condition</label>
+                  <select><option>All</option></select>
+                </div>
+                <div className="filter-group">
+                  <label>Providers Who Treat</label>
+                  <div className="checkbox-group">
+                    <label><input type="checkbox" /> All Ages</label>
+                    <label><input type="checkbox" /> Children</label>
+                    <label><input type="checkbox" /> Adults</label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="doctors-list">
+                <div className="list-header">
+                  <span>4 doctor(s) found</span>
+                  <div className="sort-buttons">
+                    <button>NAME</button>
+                    <button>SPECIALTY</button>
+                  </div>
+                </div>
+
+                <div className="doctor-card">
+                  <img 
+                    src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300" 
+                    alt="Prof Dr Maziah" 
+                    className="doctor-avatar"
+                  />
+                  <div className="doctor-details">
+                    <h3>PROF. DR. MAZIAH Binti Khairullah</h3>
+                    <p className="specialty">Obstetrics and Gynaecology</p>
+                    <p className="sub-title">Visiting Consultant</p>
+                    <p className="info">📍 Lot 193, 194, Jalan Nilai Square 6, Bandar Baru Nilai, 71800 Nilai, Negeri Sembilan Malaysia</p>
+                    <p className="info">📞 +60126504921</p>
+                    <p className="info">🌐 English, Malay</p>
+                    <button className="available-btn">NEXT AVAILABLE: TUESDAY, MARCH 22</button>
+                  </div>
+                </div>
+
+                <div className="doctor-card">
+                  <img 
+                    src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300" 
+                    alt="Dr Ahmad Faizal" 
+                    className="doctor-avatar"
+                  />
+                  <div className="doctor-details">
+                    <h3>Dr. Ahmad Faizal bin Ismail</h3>
+                    <p className="specialty">Cardiology</p>
+                    <p className="sub-title">Senior Consultant</p>
+                    <p className="info">📍 Jalan Ampang, Kuala Lumpur, 50450, Malaysia</p>
+                    <p className="info">📞 +60123456789</p>
+                    <p className="info">🌐 English, Malay, Arabic</p>
+                    <button className="available-btn">NEXT AVAILABLE: WEDNESDAY, MARCH 23</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
+        )}
+
+        {/* ---------------- ۲. بخش FIND MARKETPLACE ---------------- */}
+        {activeTab === 'marketplace' && (
+          <main className="content-body">
+            <h2 className="section-heading">Search Marketplaces and order what you need</h2>
+
+            <div className="cards-grid">
+              <div className="market-card">
+                <img 
+                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" 
+                  alt="Food Panda" 
+                  className="food-img"
                 />
-                <button type="submit">Search Doctors</button>
-              </form>
-              <div className="hero-points">
-                <span>✓ Easy Search</span>
-                <span>✓ Multiple Specialties</span>
-                <span>✓ Patient Focused</span>
+                <div className="market-card-body">
+                  <h4>Food Panda</h4>
+                  <p>As and when through a cheap amount of an and local restaurants.</p>
+                  <div className="card-footer">
+                    <button className="buy-btn">BUY NOW</button>
+                    <span className="price-tag">5 RM</span>
+                  </div>
+                </div>
               </div>
-            </section>
-            <section className="doctor-layout">
-              <aside className="filters">
-                <h3>Filter Doctors</h3>
-                <div className="filter-item">
-                  <label htmlFor="specialty">
-                    Medical Specialty
-                  </label>
-                  <select
-                    id="specialty"
-                    value={specialty}
-                    onChange={(event) =>
-                      setSpecialty(event.target.value)
-                    }
-                  >
-                    {specialties.map((item) => (
-                      <option key={item} value={item}>
-                        {item}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="filter-item">
-                  <label htmlFor="gender">Gender</label>
-                  <select
-                    id="gender"
-                    value={gender}
-                    onChange={(event) =>
-                      setGender(event.target.value)
-                    }
-                  >
-                    <option value="All">All Genders</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
-                </div>
-                <div className="filter-item">
-                  <label htmlFor="sort">Sort By</label>
-                  <select
-                    id="sort"
-                    value={sortBy}
-                    onChange={(event) =>
-                      setSortBy(event.target.value)
-                    }
-                  >
-                    <option value="name">Doctor Name</option>
-                    <option value="rating">Highest Rating</option>
-                  </select>
-                </div>
-                <button
-                  type="button"
-                  className="profile-button full-width"
-                  onClick={resetFilters}
-                >
-                  Reset Filters
-                </button>
-              </aside>
-              <div className="results">
-                <div className="results-header">
-                  <div>
-                    <h2>Available Doctors</h2>
-                    <p>
-                      {filteredDoctors.length} doctor
-                      {filteredDoctors.length === 1 ? '' : 's'} found
-                    </p>
-                  </div>
-                  <div className="view-switch">
-                    <button
-                      type="button"
-                      className={view === 'list' ? 'active' : ''}
-                      onClick={() => setView('list')}
-                    >
-                      List
-                    </button>
-                    <button
-                      type="button"
-                      className={view === 'grid' ? 'active' : ''}
-                      onClick={() => setView('grid')}
-                    >
-                      Grid
-                    </button>
+
+              <div className="market-card">
+                <img 
+                  src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400" 
+                  alt="Grab Food" 
+                  className="food-img"
+                />
+                <div className="market-card-body">
+                  <h4>Grab Food</h4>
+                  <p>Meal is something that every person has five so and treat every human...</p>
+                  <div className="card-footer">
+                    <button className="buy-btn">BUY NOW</button>
+                    <span className="price-tag">10 RM</span>
                   </div>
                 </div>
-                {filteredDoctors.length === 0 ? (
-                  <div className="empty-state">
-                    <h3>No doctors found</h3>
-                    <p>Try another name, specialty, or filter.</p>
-                  </div>
-                ) : (
-                  <div
-                    className={`doctor-list ${
-                      view === 'grid' ? 'grid-view' : ''
-                    }`}
-                  >
-                    {filteredDoctors.map((doctor) => (
-                      <article
-                        className="doctor-card"
-                        key={doctor.id}
-                      >
-                        <img
-                          src={doctor.image}
-                          alt={doctor.name}
-                          loading="lazy"
-                        />
-                        <div className="doctor-info">
-                          <h3>{doctor.name}</h3>
-                          <p className="specialty">
-                            {doctor.specialty}
-                          </p>
-                          <p>🏥 {doctor.hospital}</p>
-                          <p>📍 {doctor.location}</p>
-                          <p>🕒 {doctor.available}</p>
-                          <div className="rating">
-                            ⭐ {doctor.rating.toFixed(1)} / 5
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          className="profile-button"
-                          onClick={() => setSelectedDoctor(doctor)}
-                        >
-                          View Profile
-                        </button>
-                      </article>
-                    ))}
-                  </div>
-                )}
               </div>
-            </section>
-          </>
+
+              <div className="market-card">
+                <img 
+                  src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400" 
+                  alt="Deliveroo" 
+                  className="food-img"
+                />
+                <div className="market-card-body">
+                  <h4>Deliveroo</h4>
+                  <p>Different people have different tastes and different kinds of people.</p>
+                  <div className="card-footer">
+                    <button className="buy-btn">BUY NOW</button>
+                    <span className="price-tag">15 RM</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="market-card">
+                <img 
+                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400" 
+                  alt="Minimalist" 
+                  className="food-img"
+                />
+                <div className="market-card-body">
+                  <h4>Minimalist</h4>
+                  <p>Different people have different tastes and different kinds of people.</p>
+                  <div className="card-footer">
+                    <button className="buy-btn">BUY NOW</button>
+                    <span className="price-tag">20 RM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="table-card">
+              <h4>Other results for healthy diet search</h4>
+              <div className="table-search-row">
+                <select className="small-select"><option>1</option></select>
+                <input type="text" placeholder="enters zip code" className="table-input" />
+                <button className="table-search-btn">🔍 Search</button>
+              </div>
+
+              <table className="custom-table">
+                <thead>
+                  <tr>
+                    <th>NAME</th>
+                    <th>TYPE</th>
+                    <th>DELIVERED</th>
+                    <th>POPULARITY</th>
+                    <th>RATING</th>
+                    <th>PRICE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>🥗 Healthy Diet</td>
+                    <td>Food</td>
+                    <td>Delivered</td>
+                    <td>8</td>
+                    <td>1</td>
+                    <td><strong>10 RM</strong> <span className="small-code">243234234</span></td>
+                  </tr>
+                  <tr>
+                    <td>🍔 Food panda</td>
+                    <td>Food</td>
+                    <td>Delivered</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td><strong>15 RM</strong> <span className="small-code">983323423</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </main>
         )}
-        {page === 'marketplace' && (
-          <section className="marketplace-page">
-            <div className="market-hero">
-              <h1>Healthcare Marketplace</h1>
-              <p>
-                Explore medical devices, personal care products, and
-                first aid essentials.
-              </p>
-            </div>
-            <div className="market-search">
-              <input
-                placeholder="Search healthcare products..."
-                aria-label="Search healthcare products"
-                value={productSearch}
-                onChange={(event) =>
-                  setProductSearch(event.target.value)
-                }
-              />
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => setProductSearch('')}
-              >
-                Clear
-              </button>
-            </div>
-            <div className="market-categories">
-              {categories.map((category) => (
-                <button
-                  type="button"
-                  key={category}
-                  className={
-                    productCategory === category ? 'active' : ''
-                  }
-                  onClick={() => setProductCategory(category)}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-            <div className="market-title-row">
-              <h2>Healthcare Products</h2>
-              <span>{filteredProducts.length} products found</span>
-            </div>
-            {filteredProducts.length === 0 ? (
-              <div className="empty-state">
-                <h3>No products found</h3>
-                <p>Try another search or category.</p>
+
+        {/* ---------------- ۳. بخش SETTINGS ---------------- */}
+        {activeTab === 'settings' && (
+          <main className="content-body">
+            <div className="settings-layout">
+              <div className="settings-sidebar">
+                <button className="s-nav">🚀 Profile</button>
+                <button className="s-nav active">📋 Basic Info</button>
+                <button className="s-nav">📦 Change Password</button>
+                <button className="s-nav">🏪 2FA</button>
+                <button className="s-nav">🔧 Sessions</button>
+                <button className="s-nav">💳 Delete Account</button>
               </div>
-            ) : (
-              <div className="product-grid">
-                {filteredProducts.map((product) => (
-                  <article
-                    className="product-card"
-                    key={product.id}
-                  >
-                    <div className="product-picture">
-                      {product.image}
+
+              <div className="settings-content">
+                <div className="user-profile-card">
+                  <div className="user-profile-info">
+                    <img 
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" 
+                      alt="Azam Shah" 
+                      className="profile-avatar"
+                    />
+                    <div>
+                      <h3>Azam Shah</h3>
+                      <p className="role">Patient</p>
                     </div>
-                    <p className="product-category">
-                      {product.category}
-                    </p>
-                    <h3>{product.name}</h3>
-                    <p className="product-description">
-                      {product.description}
-                    </p>
-                    <p className="product-price">
-                      ${product.price.toFixed(2)}
-                      <span>${product.oldPrice.toFixed(2)}</span>
-                    </p>
-                    <p className="product-rating">
-                      ⭐ {product.rating.toFixed(1)} / 5
-                    </p>
-                    <button
-                      type="button"
-                      className="profile-button full-width"
-                      onClick={() =>
-                        setMessage(
-                          `${product.name} selected. Connect a checkout service to place orders.`,
-                        )
-                      }
-                    >
-                      View Product
-                    </button>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
-        )}
-        {page === 'settings' && (
-          <section className="settings-page">
-            <div className="settings-card">
-              <h2>Account Settings</h2>
-              <p>Manage your personal information.</p>
-              <label htmlFor="saved-name">Full Name</label>
-              <input
-                id="saved-name"
-                value={savedName}
-                onChange={(event) =>
-                  setSavedName(event.target.value)
-                }
-                placeholder="Enter your full name"
-              />
-              <label htmlFor="saved-email">Email Address</label>
-              <input
-                id="saved-email"
-                type="email"
-                value={savedEmail}
-                onChange={(event) =>
-                  setSavedEmail(event.target.value)
-                }
-                placeholder="Enter your email"
-              />
-              <button
-                type="button"
-                className="profile-button settings-save"
-                onClick={() =>
-                  setMessage(
-                    `Settings updated for ${savedName}. This demo does not save data to a server.`,
-                  )
-                }
-              >
-                Save Settings
-              </button>
-            </div>
-            <div className="settings-card">
-              <h2>Notifications</h2>
-              <p>Choose which updates you want to receive.</p>
-              <label className="notification-row">
-                <span>
-                  Appointment Updates
-                  <small>Receive appointment reminders.</small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={notifications.appointments}
-                  onChange={() =>
-                    toggleNotification('appointments')
-                  }
-                />
-              </label>
-              <label className="notification-row">
-                <span>
-                  Health Tips
-                  <small>Receive useful health information.</small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={notifications.healthTips}
-                  onChange={() =>
-                    toggleNotification('healthTips')
-                  }
-                />
-              </label>
-              <label className="notification-row">
-                <span>
-                  Special Offers
-                  <small>Receive product promotions.</small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={notifications.offers}
-                  onChange={() =>
-                    toggleNotification('offers')
-                  }
-                />
-              </label>
-            </div>
-            <div className="settings-card">
-              <h2>Appearance</h2>
-              <p>Choose the appearance of your application.</p>
-              <div className="theme-options">
-                <button
-                  type="button"
-                  className={!darkMode ? 'selected' : ''}
-                  onClick={() => setDarkMode(false)}
-                >
-                  ☀️ Light Mode
-                </button>
-                <button
-                  type="button"
-                  className={darkMode ? 'selected' : ''}
-                  onClick={() => setDarkMode(true)}
-                >
-                  🌙 Dark Mode
-                </button>
-              </div>
-            </div>
-          </section>
-        )}
-      </main>
-      {selectedDoctor && (
-        <div
-          className="modal-overlay"
-          onClick={(event) => {
-            if (event.target === event.currentTarget) {
-              setSelectedDoctor(null)
-            }
-          }}
-        >
-          <section
-            className="profile-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="doctor-profile-title"
-          >
-            <button
-              type="button"
-              className="close-button"
-              onClick={() => setSelectedDoctor(null)}
-              aria-label="Close doctor profile"
-            >
-              ×
-            </button>
-            <div className="doctor-header">
-              <img
-                src={selectedDoctor.image}
-                alt={selectedDoctor.name}
-              />
-              <div>
-                <h2 id="doctor-profile-title">
-                  {selectedDoctor.name}
-                </h2>
-                <p className="doctor-specialty">
-                  {selectedDoctor.specialty}
-                </p>
-                <div className="rating">
-                  ⭐ {selectedDoctor.rating.toFixed(1)} / 5
+                  </div>
+                  <div className="switch-box">
+                    <span>Switch to invisible</span>
+                    <input type="checkbox" className="toggle-switch" />
+                  </div>
+                </div>
+
+                <div className="form-card">
+                  <h3>Basic Info</h3>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>First Name</label>
+                      <input type="text" defaultValue="Alec" />
+                    </div>
+                    <div className="form-group">
+                      <label>Last Name</label>
+                      <input type="text" defaultValue="Thompson" />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>I'm</label>
+                      <select><option>Male</option><option>Female</option></select>
+                    </div>
+                    <div className="form-group">
+                      <label>Birth Date</label>
+                      <div className="date-inputs">
+                        <select><option>February</option></select>
+                        <select><option>1</option></select>
+                        <select><option>2021</option></select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Email</label>
+                      <input type="email" defaultValue="example@email.com" />
+                    </div>
+                    <div className="form-group">
+                      <label>Blood Group</label>
+                      <input type="text" defaultValue="A+" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="danger-card">
+                  <h4>Delete Account</h4>
+                  <p className="danger-sub">Once you delete your account, there is no going back. Please be certain.</p>
+                  <div className="danger-actions">
+                    <label className="checkbox-label">
+                      <input type="checkbox" />
+                      <span>Confirm</span>
+                      <small>I want to delete my account.</small>
+                    </label>
+                    <div className="danger-btns">
+                      <button className="btn-deactivate">DEACTIVATE</button>
+                      <button className="btn-delete">DELETE ACCOUNT</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="profile-details">
-              <div className="profile-detail">
-                <span>Hospital</span>
-                <strong>{selectedDoctor.hospital}</strong>
-              </div>
-              <div className="profile-detail">
-                <span>Location</span>
-                <strong>{selectedDoctor.location}</strong>
-              </div>
-              <div className="profile-detail">
-                <span>Gender</span>
-                <strong>{selectedDoctor.gender}</strong>
-              </div>
-              <div className="profile-detail">
-                <span>Availability</span>
-                <strong>{selectedDoctor.available}</strong>
-              </div>
-              <div className="profile-detail">
-                <span>Phone</span>
-                <strong>{selectedDoctor.phone}</strong>
-              </div>
-              <div className="profile-detail">
-                <span>Languages</span>
-                <strong>{selectedDoctor.languages}</strong>
-              </div>
-            </div>
-            <button
-              type="button"
-              className="book-button"
-              onClick={() => handleBooking(selectedDoctor)}
-            >
-              Request Appointment
-            </button>
-          </section>
-        </div>
-      )}
+          </main>
+        )}
+
+      </div>
     </div>
-  )
+  );
 }
-export default App
