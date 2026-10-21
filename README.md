@@ -1,16 +1,19 @@
-# React + Vite
+# MyPatientHUB - Healthcare Platform (React Project)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React-based frontend project for the **MyPatientHUB** healthcare application, developed as a team project.
 
-Currently, two official plugins are available:
+## Features
+- **Sidebar Navigation:** Easy navigation across Dashboard, Appointments, Find Doctor, Find MarketPlace, and Settings.
+- **Find Doctor:** Search and filter medical practitioners and view their availability[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span)[span_2](start_span)[span_2](end_span).
+- **Find MarketPlace:** Search health products/diet foods and place orders[span_3](start_span)[span_3](end_span)[span_4](start_span)[span_4](end_span).
+- **Settings:** Manage patient profile, basic info, and account security.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Technologies Used
+- **React (Vite)**[span_5](start_span)[span_5](end_span)
+- **CSS3 (Flexbox & Responsive Layout)**[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)[span_8](start_span)[span_8](end_span)
+- **Git & GitHub** for version control and teamwork
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Run the Project Locally
+1. Clone the repository:
+   ```bash
+   git clone [https://github.com/sharifa448/PATIENT-HUB-REACT.git](https://github.com/sharifa448/PATIENT-HUB-REACT.git)

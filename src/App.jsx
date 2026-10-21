@@ -2,7 +2,32 @@ import React, { useState } from 'react';
 import './App.css';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('settings');
+  const [activeTab, setActiveTab] = useState('doctor');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [searchDoctorQuery, setSearchDoctorQuery] = useState('');
+
+  const handleBuyClick = (name, price, img) => {
+    setSelectedItem({ name, price, img });
+  };
+
+  const closeModal = () => {
+    setSelectedItem(null);
+  };
+
+  const handleDoctorSearch = (e) => {
+    e.preventDefault();
+    if(searchDoctorQuery.trim() === '') {
+      alert("لطفاً نام یا تخصص پزشک را برای جستجو وارد کنید.");
+    } else {
+      alert(`نتایج جستجو برای: "${searchDoctorQuery}"`);
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    if (window.confirm("آیا از حذف حساب کاربری خود اطمینان دارید؟")) {
+      alert("حساب کاربری شما غیرفعال گردید.");
+    }
+  };
 
   return (
     <div className="app-container">
@@ -17,10 +42,10 @@ export default function App() {
         </div>
 
         <ul className="nav-menu">
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => alert("Dashboard")}>
             <span className="nav-icon">🔲</span> Dashboard
           </li>
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => alert("Appointments")}>
             <span className="nav-icon">📅</span> Appointments
           </li>
           <li 
@@ -29,10 +54,10 @@ export default function App() {
           >
             <span className="nav-icon">🩺</span> Find Doctor
           </li>
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => alert("Find Clinic")}>
             <span className="nav-icon">🏥</span> Find Clinic
           </li>
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => alert("Chat")}>
             <span className="nav-icon">💬</span> Chat
           </li>
           <li 
@@ -41,13 +66,13 @@ export default function App() {
           >
             <span className="nav-icon">🛍️</span> Find MarketPlace
           </li>
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => alert("Find Pharmacy")}>
             <span className="nav-icon">💊</span> Find Pharmacy
           </li>
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => alert("My Dependents")}>
             <span className="nav-icon">👥</span> My Dependents
           </li>
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => alert("My Account")}>
             <span className="nav-icon">⚙️</span> My Account
           </li>
           <li 
@@ -63,8 +88,8 @@ export default function App() {
           <h4>Download</h4>
           <p>MyPIHUB Mobile App</p>
           <div className="store-buttons">
-            <button className="store-btn"> App Store</button>
-            <button className="store-btn">🤖 Play Store</button>
+            <button className="store-btn" onClick={() => alert("App Store")}> App Store</button>
+            <button className="store-btn" onClick={() => alert("Play Store")}>🤖 Play Store</button>
           </div>
         </div>
       </aside>
@@ -85,9 +110,9 @@ export default function App() {
             <input type="text" placeholder="Type here..." />
           </div>
           <div className="header-actions">
-            <button className="logout-btn">➡️ Log out</button>
-            <span className="header-icon">⚙️</span>
-            <span className="header-icon">🔔</span>
+            <button className="logout-btn" onClick={() => alert("Logged out")}>➡️ Log out</button>
+            <span className="header-icon" onClick={() => alert("Settings")}>⚙️</span>
+            <span className="header-icon" onClick={() => alert("Notifications")}>🔔</span>
           </div>
         </header>
 
@@ -97,15 +122,20 @@ export default function App() {
             <div className="doctor-hero-banner">
               <h2>Find a Doctor</h2>
               <p>Search Doctors and schedule an appointment</p>
-              <div className="hero-search-bar">
+              <form className="hero-search-bar" onSubmit={handleDoctorSearch}>
                 <span className="search-icon">🔍</span>
-                <input type="text" placeholder="Search a doctor by name, specialty" />
-                <button className="search-btn">SEARCH</button>
-              </div>
+                <input 
+                  type="text" 
+                  placeholder="Search a doctor by name, specialty" 
+                  value={searchDoctorQuery}
+                  onChange={(e) => setSearchDoctorQuery(e.target.value)}
+                />
+                <button type="submit" className="search-btn">SEARCH</button>
+              </form>
             </div>
 
             <div className="view-toggle">
-              <button className="toggle-btn">🗺️ Map</button>
+              <button className="toggle-btn" onClick={() => alert("Map View")}>🗺️ Map</button>
               <button className="toggle-btn active-purple">☰ List</button>
             </div>
 
@@ -138,8 +168,8 @@ export default function App() {
                 <div className="list-header">
                   <span>4 doctor(s) found</span>
                   <div className="sort-buttons">
-                    <button>NAME</button>
-                    <button>SPECIALTY</button>
+                    <button onClick={() => alert("Sorted by Name")}>NAME</button>
+                    <button onClick={() => alert("Sorted by Specialty")}>SPECIALTY</button>
                   </div>
                 </div>
 
@@ -156,7 +186,7 @@ export default function App() {
                     <p className="info">📍 Lot 193, 194, Jalan Nilai Square 6, Bandar Baru Nilai, 71800 Nilai, Negeri Sembilan Malaysia</p>
                     <p className="info">📞 +60126504921</p>
                     <p className="info">🌐 English, Malay</p>
-                    <button className="available-btn">NEXT AVAILABLE: TUESDAY, MARCH 22</button>
+                    <button className="available-btn" onClick={() => alert("Appointment Booked!")}>NEXT AVAILABLE: TUESDAY, MARCH 22</button>
                   </div>
                 </div>
 
@@ -173,7 +203,7 @@ export default function App() {
                     <p className="info">📍 Jalan Ampang, Kuala Lumpur, 50450, Malaysia</p>
                     <p className="info">📞 +60123456789</p>
                     <p className="info">🌐 English, Malay, Arabic</p>
-                    <button className="available-btn">NEXT AVAILABLE: WEDNESDAY, MARCH 23</button>
+                    <button className="available-btn" onClick={() => alert("Appointment Booked!")}>NEXT AVAILABLE: WEDNESDAY, MARCH 23</button>
                   </div>
                 </div>
               </div>
@@ -188,64 +218,48 @@ export default function App() {
 
             <div className="cards-grid">
               <div className="market-card">
-                <img 
-                  src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" 
-                  alt="Food Panda" 
-                  className="food-img"
-                />
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" alt="Food Panda" className="food-img" />
                 <div className="market-card-body">
                   <h4>Food Panda</h4>
                   <p>As and when through a cheap amount of an and local restaurants.</p>
                   <div className="card-footer">
-                    <button className="buy-btn">BUY NOW</button>
+                    <button className="buy-btn" onClick={() => handleBuyClick("Food Panda", "5 RM", "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400")}>BUY NOW</button>
                     <span className="price-tag">5 RM</span>
                   </div>
                 </div>
               </div>
 
               <div className="market-card">
-                <img 
-                  src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400" 
-                  alt="Grab Food" 
-                  className="food-img"
-                />
+                <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400" alt="Grab Food" className="food-img" />
                 <div className="market-card-body">
                   <h4>Grab Food</h4>
                   <p>Meal is something that every person has five so and treat every human...</p>
                   <div className="card-footer">
-                    <button className="buy-btn">BUY NOW</button>
+                    <button className="buy-btn" onClick={() => handleBuyClick("Grab Food", "10 RM", "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400")}>BUY NOW</button>
                     <span className="price-tag">10 RM</span>
                   </div>
                 </div>
               </div>
 
               <div className="market-card">
-                <img 
-                  src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400" 
-                  alt="Deliveroo" 
-                  className="food-img"
-                />
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400" alt="Deliveroo" className="food-img" />
                 <div className="market-card-body">
                   <h4>Deliveroo</h4>
                   <p>Different people have different tastes and different kinds of people.</p>
                   <div className="card-footer">
-                    <button className="buy-btn">BUY NOW</button>
+                    <button className="buy-btn" onClick={() => handleBuyClick("Deliveroo", "15 RM", "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400")}>BUY NOW</button>
                     <span className="price-tag">15 RM</span>
                   </div>
                 </div>
               </div>
 
               <div className="market-card">
-                <img 
-                  src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400" 
-                  alt="Minimalist" 
-                  className="food-img"
-                />
+                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400" alt="Minimalist" className="food-img" />
                 <div className="market-card-body">
                   <h4>Minimalist</h4>
                   <p>Different people have different tastes and different kinds of people.</p>
                   <div className="card-footer">
-                    <button className="buy-btn">BUY NOW</button>
+                    <button className="buy-btn" onClick={() => handleBuyClick("Minimalist", "20 RM", "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400")}>BUY NOW</button>
                     <span className="price-tag">20 RM</span>
                   </div>
                 </div>
@@ -257,7 +271,7 @@ export default function App() {
               <div className="table-search-row">
                 <select className="small-select"><option>1</option></select>
                 <input type="text" placeholder="enters zip code" className="table-input" />
-                <button className="table-search-btn">🔍 Search</button>
+                <button className="table-search-btn" onClick={() => alert("Searching zip code...")}>🔍 Search</button>
               </div>
 
               <table className="custom-table">
@@ -299,12 +313,12 @@ export default function App() {
           <main className="content-body">
             <div className="settings-layout">
               <div className="settings-sidebar">
-                <button className="s-nav">🚀 Profile</button>
-                <button className="s-nav active">📋 Basic Info</button>
-                <button className="s-nav">📦 Change Password</button>
-                <button className="s-nav">🏪 2FA</button>
-                <button className="s-nav">🔧 Sessions</button>
-                <button className="s-nav">💳 Delete Account</button>
+                <button className="s-nav" onClick={() => alert("Profile")}>🚀 Profile</button>
+                <button className="s-nav active" onClick={() => alert("Basic Info")}>📋 Basic Info</button>
+                <button className="s-nav" onClick={() => alert("Change Password")}>📦 Change Password</button>
+                <button className="s-nav" onClick={() => alert("2FA")}>🏪 2FA</button>
+                <button className="s-nav" onClick={() => alert("Sessions")}>🔧 Sessions</button>
+                <button className="s-nav" onClick={() => alert("Delete Account")}>💳 Delete Account</button>
               </div>
 
               <div className="settings-content">
@@ -322,7 +336,7 @@ export default function App() {
                   </div>
                   <div className="switch-box">
                     <span>Switch to invisible</span>
-                    <input type="checkbox" className="toggle-switch" />
+                    <input type="checkbox" className="toggle-switch" onChange={(e) => alert(e.target.checked ? "Invisible mode ON" : "Invisible mode OFF")} />
                   </div>
                 </div>
 
@@ -376,8 +390,8 @@ export default function App() {
                       <small>I want to delete my account.</small>
                     </label>
                     <div className="danger-btns">
-                      <button className="btn-deactivate">DEACTIVATE</button>
-                      <button className="btn-delete">DELETE ACCOUNT</button>
+                      <button className="btn-deactivate" onClick={() => alert("Deactivated!")}>DEACTIVATE</button>
+                      <button className="btn-delete" onClick={handleDeleteAccount}>DELETE ACCOUNT</button>
                     </div>
                   </div>
                 </div>
@@ -387,6 +401,22 @@ export default function App() {
         )}
 
       </div>
+
+      {/* ---------------- پاپ‌آپ سفارشی (Modal) ---------------- */}
+      {selectedItem && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <img src={selectedItem.img} alt={selectedItem.name} className="modal-img" />
+            <h3>{selectedItem.name}</h3>
+            <p style={{fontSize: '13px', color: '#64748b'}}>Your healthy order is ready to process.</p>
+            <div className="modal-price">Total Price: <strong>{selectedItem.price}</strong></div>
+            <div className="modal-actions">
+              <button className="confirm-btn" onClick={() => { alert("Order Confirmed Successfully!"); closeModal(); }}>Confirm Order</button>
+              <button className="close-btn" onClick={closeModal}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
