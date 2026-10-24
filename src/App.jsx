@@ -3,6 +3,7 @@ import './App.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('doctor');
+  const [searchError, setSearchError] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchDoctorQuery, setSearchDoctorQuery] = useState('');
 
@@ -14,12 +15,15 @@ export default function App() {
     setSelectedItem(null);
   };
 
+  // تابع جستجوی داکتر همراه با ولیدیشن
   const handleDoctorSearch = (e) => {
     e.preventDefault();
-    if(searchDoctorQuery.trim() === '') {
-      alert("لطفاً نام یا تخصص پزشک را برای جستجو وارد کنید.");
+    
+    if (searchDoctorQuery.trim() === '') {
+      setSearchError("لطفاً نام یا تخصص پزشک را برای جستجو وارد کنید.");
     } else {
-      alert(`نتایج جستجو برای: "${searchDoctorQuery}"`);
+      setSearchError(""); // پاک کردن خطا در صورت پر بودن فیلد
+      alert(`نتایج جستجو برای: ${searchDoctorQuery}`);
     }
   };
 
@@ -132,6 +136,23 @@ export default function App() {
                 />
                 <button type="submit" className="search-btn">SEARCH</button>
               </form>
+              
+              {/* پیام خطا با کادر سرخ و متن بسیار خوانا */}
+              {searchError && (
+                <div style={{
+                  backgroundColor: '#fee2e2',
+                  border: '1px solid #ef4444',
+                  color: '#991b1b',
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  marginTop: '10px',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  textAlign: 'right'
+                }}>
+                  ⚠️ {searchError}
+                </div>
+              )}
             </div>
 
             <div className="view-toggle">
