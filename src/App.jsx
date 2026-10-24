@@ -2,10 +2,59 @@ import React, { useState } from 'react';
 import './App.css';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('doctor');
+  const [activeTab, setActiveTab] = useState('settings');
   const [searchError, setSearchError] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [searchDoctorQuery, setSearchDoctorQuery] = useState('');
+
+  // ---------- Stateهای بخش Settings ----------
+  const [profileData, setProfileData] = useState({
+    firstName: 'Alec',
+    lastName: 'Thompson',
+    gender: 'Male',
+    birthMonth: 'February',
+    birthDay: '1',
+    birthYear: '2021',
+    email: 'example@email.com',
+    bloodGroup: 'A+'
+  });
+
+  const [settingsErrors, setSettingsErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfileData({ ...profileData, [name]: value });
+    setSettingsErrors({ ...settingsErrors, [name]: "" });
+    setSuccessMessage("");
+  };
+
+  const handleSaveProfile = (e) => {
+    e.preventDefault();
+    let errors = {};
+
+    if (!profileData.firstName.trim()) {
+      errors.firstName = "نام نمی‌تواند خالی باشد.";
+    }
+
+    if (!profileData.lastName.trim()) {
+      errors.lastName = "تخلص نمی‌تواند خالی باشد.";
+    }
+
+    if (!profileData.email.trim()) {
+      errors.email = "ایمیل الزامی است.";
+    } else if (!/\S+@\S+\.\S+/.test(profileData.email)) {
+      errors.email = "فرمت ایمیل وارد شده معتبر نیست.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setSettingsErrors(errors);
+      setSuccessMessage("");
+    } else {
+      setSettingsErrors({});
+      setSuccessMessage("اطلاعات حساب شما با موفقیت به‌روزرسانی شد!");
+    }
+  };
 
   const handleBuyClick = (name, price, img) => {
     setSelectedItem({ name, price, img });
@@ -15,14 +64,12 @@ export default function App() {
     setSelectedItem(null);
   };
 
-  // تابع جستجوی داکتر همراه با ولیدیشن
   const handleDoctorSearch = (e) => {
     e.preventDefault();
-    
     if (searchDoctorQuery.trim() === '') {
       setSearchError("لطفاً نام یا تخصص پزشک را برای جستجو وارد کنید.");
     } else {
-      setSearchError(""); // پاک کردن خطا در صورت پر بودن فیلد
+      setSearchError("");
       alert(`نتایج جستجو برای: ${searchDoctorQuery}`);
     }
   };
@@ -35,7 +82,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* ---------------- سایدبار سمت چپ (Sidebar) ---------------- */}
+      {/* ---------------- سایدبار سمت چپ ---------------- */}
       <aside className="sidebar">
         <div className="brand">
           <div className="brand-logo">M</div>
@@ -87,7 +134,6 @@ export default function App() {
           </li>
         </ul>
 
-        {/* بنر دانلود اپلیکیشن */}
         <div className="download-banner">
           <h4>Download</h4>
           <p>MyPIHUB Mobile App</p>
@@ -98,10 +144,9 @@ export default function App() {
         </div>
       </aside>
 
-      {/* ---------------- محتوای اصلی (Main Content) ---------------- */}
+      {/* ---------------- محتوای اصلی ---------------- */}
       <div className="main-content">
         
-        {/* هدر بالای صفحه */}
         <header className="top-header">
           <div className="breadcrumb">
             🏠 / {activeTab === 'doctor' ? 'Find a Doctor' : activeTab === 'marketplace' ? 'Marketplace' : 'Accountsetting'}
@@ -137,7 +182,6 @@ export default function App() {
                 <button type="submit" className="search-btn">SEARCH</button>
               </form>
               
-              {/* پیام خطا با کادر سرخ و متن بسیار خوانا */}
               {searchError && (
                 <div style={{
                   backgroundColor: '#fee2e2',
@@ -195,11 +239,7 @@ export default function App() {
                 </div>
 
                 <div className="doctor-card">
-                  <img 
-                    src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300" 
-                    alt="Prof Dr Maziah" 
-                    className="doctor-avatar"
-                  />
+                  <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300" alt="Prof Dr Maziah" className="doctor-avatar" />
                   <div className="doctor-details">
                     <h3>PROF. DR. MAZIAH Binti Khairullah</h3>
                     <p className="specialty">Obstetrics and Gynaecology</p>
@@ -212,11 +252,7 @@ export default function App() {
                 </div>
 
                 <div className="doctor-card">
-                  <img 
-                    src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300" 
-                    alt="Dr Ahmad Faizal" 
-                    className="doctor-avatar"
-                  />
+                  <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=300" alt="Dr Ahmad Faizal" className="doctor-avatar" />
                   <div className="doctor-details">
                     <h3>Dr. Ahmad Faizal bin Ismail</h3>
                     <p className="specialty">Cardiology</p>
@@ -236,7 +272,6 @@ export default function App() {
         {activeTab === 'marketplace' && (
           <main className="content-body">
             <h2 className="section-heading">Search Marketplaces and order what you need</h2>
-
             <div className="cards-grid">
               <div className="market-card">
                 <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" alt="Food Panda" className="food-img" />
@@ -249,82 +284,6 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
-              <div className="market-card">
-                <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400" alt="Grab Food" className="food-img" />
-                <div className="market-card-body">
-                  <h4>Grab Food</h4>
-                  <p>Meal is something that every person has five so and treat every human...</p>
-                  <div className="card-footer">
-                    <button className="buy-btn" onClick={() => handleBuyClick("Grab Food", "10 RM", "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400")}>BUY NOW</button>
-                    <span className="price-tag">10 RM</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="market-card">
-                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400" alt="Deliveroo" className="food-img" />
-                <div className="market-card-body">
-                  <h4>Deliveroo</h4>
-                  <p>Different people have different tastes and different kinds of people.</p>
-                  <div className="card-footer">
-                    <button className="buy-btn" onClick={() => handleBuyClick("Deliveroo", "15 RM", "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400")}>BUY NOW</button>
-                    <span className="price-tag">15 RM</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="market-card">
-                <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400" alt="Minimalist" className="food-img" />
-                <div className="market-card-body">
-                  <h4>Minimalist</h4>
-                  <p>Different people have different tastes and different kinds of people.</p>
-                  <div className="card-footer">
-                    <button className="buy-btn" onClick={() => handleBuyClick("Minimalist", "20 RM", "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400")}>BUY NOW</button>
-                    <span className="price-tag">20 RM</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="table-card">
-              <h4>Other results for healthy diet search</h4>
-              <div className="table-search-row">
-                <select className="small-select"><option>1</option></select>
-                <input type="text" placeholder="enters zip code" className="table-input" />
-                <button className="table-search-btn" onClick={() => alert("Searching zip code...")}>🔍 Search</button>
-              </div>
-
-              <table className="custom-table">
-                <thead>
-                  <tr>
-                    <th>NAME</th>
-                    <th>TYPE</th>
-                    <th>DELIVERED</th>
-                    <th>POPULARITY</th>
-                    <th>RATING</th>
-                    <th>PRICE</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>🥗 Healthy Diet</td>
-                    <td>Food</td>
-                    <td>Delivered</td>
-                    <td>8</td>
-                    <td>1</td>
-                    <td><strong>10 RM</strong> <span className="small-code">243234234</span></td>
-                  </tr>
-                  <tr>
-                    <td>🍔 Food panda</td>
-                    <td>Food</td>
-                    <td>Delivered</td>
-                    <td>10</td>
-                    <td>1</td>
-                    <td><strong>15 RM</strong> <span className="small-code">983323423</span></td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </main>
         )}
@@ -335,7 +294,7 @@ export default function App() {
             <div className="settings-layout">
               <div className="settings-sidebar">
                 <button className="s-nav" onClick={() => alert("Profile")}>🚀 Profile</button>
-                <button className="s-nav active" onClick={() => alert("Basic Info")}>📋 Basic Info</button>
+                <button className="s-nav active">📋 Basic Info</button>
                 <button className="s-nav" onClick={() => alert("Change Password")}>📦 Change Password</button>
                 <button className="s-nav" onClick={() => alert("2FA")}>🏪 2FA</button>
                 <button className="s-nav" onClick={() => alert("Sessions")}>🔧 Sessions</button>
@@ -351,7 +310,7 @@ export default function App() {
                       className="profile-avatar"
                     />
                     <div>
-                      <h3>Azam Shah</h3>
+                      <h3>{profileData.firstName} {profileData.lastName}</h3>
                       <p className="role">Patient</p>
                     </div>
                   </div>
@@ -361,30 +320,74 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="form-card">
+                {successMessage && (
+                  <div style={{
+                    backgroundColor: '#dcfce7',
+                    border: '1px solid #22c55e',
+                    color: '#15803d',
+                    padding: '10px 15px',
+                    borderRadius: '8px',
+                    marginBottom: '15px',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    textAlign: 'right'
+                  }}>
+                    ✅ {successMessage}
+                  </div>
+                )}
+
+                <form className="form-card" onSubmit={handleSaveProfile}>
                   <h3>Basic Info</h3>
+                  
                   <div className="form-row">
                     <div className="form-group">
                       <label>First Name</label>
-                      <input type="text" defaultValue="Alec" />
+                      <input 
+                        type="text" 
+                        name="firstName"
+                        value={profileData.firstName} 
+                        onChange={handleInputChange} 
+                      />
+                      {settingsErrors.firstName && <span style={{color: '#dc2626', fontSize: '12px', marginTop: '4px'}}>{settingsErrors.firstName}</span>}
                     </div>
+
                     <div className="form-group">
                       <label>Last Name</label>
-                      <input type="text" defaultValue="Thompson" />
+                      <input 
+                        type="text" 
+                        name="lastName"
+                        value={profileData.lastName} 
+                        onChange={handleInputChange} 
+                      />
+                      {settingsErrors.lastName && <span style={{color: '#dc2626', fontSize: '12px', marginTop: '4px'}}>{settingsErrors.lastName}</span>}
                     </div>
                   </div>
 
                   <div className="form-row">
                     <div className="form-group">
                       <label>I'm</label>
-                      <select><option>Male</option><option>Female</option></select>
+                      <select name="gender" value={profileData.gender} onChange={handleInputChange}>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>
                     </div>
+
                     <div className="form-group">
                       <label>Birth Date</label>
                       <div className="date-inputs">
-                        <select><option>February</option></select>
-                        <select><option>1</option></select>
-                        <select><option>2021</option></select>
+                        <select name="birthMonth" value={profileData.birthMonth} onChange={handleInputChange}>
+                          <option value="January">January</option>
+                          <option value="February">February</option>
+                          <option value="March">March</option>
+                        </select>
+                        <select name="birthDay" value={profileData.birthDay} onChange={handleInputChange}>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                        </select>
+                        <select name="birthYear" value={profileData.birthYear} onChange={handleInputChange}>
+                          <option value="2021">2021</option>
+                          <option value="2020">2020</option>
+                        </select>
                       </div>
                     </div>
                   </div>
@@ -392,14 +395,43 @@ export default function App() {
                   <div className="form-row">
                     <div className="form-group">
                       <label>Email</label>
-                      <input type="email" defaultValue="example@email.com" />
+                      <input 
+                        type="email" 
+                        name="email"
+                        value={profileData.email} 
+                        onChange={handleInputChange} 
+                      />
+                      {settingsErrors.email && <span style={{color: '#dc2626', fontSize: '12px', marginTop: '4px'}}>{settingsErrors.email}</span>}
                     </div>
+
                     <div className="form-group">
                       <label>Blood Group</label>
-                      <input type="text" defaultValue="A+" />
+                      <input 
+                        type="text" 
+                        name="bloodGroup"
+                        value={profileData.bloodGroup} 
+                        onChange={handleInputChange} 
+                      />
                     </div>
                   </div>
-                </div>
+
+                  <div style={{ marginTop: '20px', textAlign: 'right' }}>
+                    <button 
+                      type="submit" 
+                      style={{
+                        backgroundColor: '#8b5cf6',
+                        color: '#fff',
+                        padding: '10px 24px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      SAVE CHANGES
+                    </button>
+                  </div>
+                </form>
 
                 <div className="danger-card">
                   <h4>Delete Account</h4>
@@ -423,7 +455,6 @@ export default function App() {
 
       </div>
 
-      {/* ---------------- پاپ‌آپ سفارشی (Modal) ---------------- */}
       {selectedItem && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
